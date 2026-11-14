@@ -1,0 +1,36 @@
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Register/loginpage.css' %}">
+
+<div class="auth-page">
+    <div class="container">
+
+     
+        <h2 class="login-title">Lead Management System</h2>
+        <div class="title-underline"></div>
+
+        <form method="post" class="login-form">
+            
+            {% csrf_token %}
+            <label class="form-label">Username</label>
+            <input type="text" name="username" class="form-input">
+
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-input form-input--password">
+            
+
+            <button type="submit" class="login-submit">Login</button>
+            {% if error %} <div class="error"> {{ error }}</div>{% endif %}
+        </form>
+
+    <p class="signup-prompt">
+        Don't have an account? <a href="{% url 'Register:Signup' %}" class="signup-link">Sign Up</a>
+    </p>
+  
+    <p class="signup-prompt">
+        <a href="{% url 'Register:PasswordReset' %}" class="signup-link">Forgot password?</a>
+    </p>
+</div>
+</div>
+{% endblock %}

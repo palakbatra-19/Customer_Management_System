@@ -1,0 +1,41 @@
+{% extends "Routes/base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Customer/Followup.css' %}">
+
+ 
+<h2>Follow-ups — {{ customer.name }}</h2>
+ 
+{% if request.user.is_staff %}
+<a href="{% url 'Customer:Followup_create' customer.id %}" class="new-followup-btn">+ New Follow-up</a>
+{% endif %}
+ 
+<table class="followup-table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Ticket</th>
+      <th>Notes</th>
+      {% if request.user.is_staff %}<th>Agent</th>{% endif %}
+      <th>Status</th>
+      {% if request.user.is_staff %}<th>Actions</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for f in follow_ups %}
+    <tr>
+      <td>{{ f.Follow_up_date }}</td>
+      <td>{{ f.ticket.title|default:"—" }}</td>
+      <td>{{ f.notes }}</td>
+      {% if request.user.is_staff %}<td>{{ f.assigned_agent|default:"Unassigned" }}</td>{% endif %}
+      <td>{{ f.get_status_display }}</td>
+      {% if request.user.is_staff %}
+      <td><a href="{% url 'Customer:Followup_edit' customer.id f.id %}">Edit</a></td>
+      {% endif %}
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">No follow-ups yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

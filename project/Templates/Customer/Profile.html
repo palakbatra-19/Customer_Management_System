@@ -1,0 +1,75 @@
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Customer/profile.css' %}">
+
+<div class="dashboard-container">
+    <h2 class="profile-title">My Profile</h2>
+
+    {% if customer %}
+        <div class="profile-info">
+            <p><strong>Name:</strong> {{ customer.name }}</p>
+            <p><strong>Email:</strong> {{ customer.email }}</p>
+            <p><strong>Phone:</strong> {{ customer.phone }}</p>
+            <p><strong>Company:</strong> {{ customer.company|default:"—" }}</p>
+            <p><strong>Status:</strong> {{ customer.get_status_display }}</p>
+        </div>
+
+        <div class="tickets-header">
+            <h3 class="tickets-heading">My Tickets</h3>
+            <a href="{% url 'Ticket:Ticket_create' %}" class="new-ticket-btn">
+                + New Ticket
+            </a>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr class="table-head">
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                <tr class="table-row">
+                    <td>{{ ticket.title }}</td>
+                    <td>{{ ticket.get_status_display }}</td>
+                    <td>{{ ticket.get_priority_display }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" class="empty-row">You have no tickets yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+<div class="tickets-header">
+    <h3 class="tickets-heading">My Follow-ups</h3>
+</div>
+ 
+<table class="data-table">
+    <thead>
+        <tr class="table-head">
+            <th>Date</th>
+            <th>Notes</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for f in follow_ups %}
+        <tr class="table-row">
+            <td>{{ f.Follow_up_date }}</td>
+            <td>{{ f.notes }}</td>
+            <td>{{ f.get_status_display }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" class="empty-row">No follow-ups scheduled.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+ 
+    {% else %}
+        <p>No customer profile is linked to your account yet. Contact an admin to get set up.</p>
+    {% endif %}
+</div>
+{% endblock %}

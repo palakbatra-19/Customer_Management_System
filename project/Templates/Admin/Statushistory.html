@@ -1,0 +1,40 @@
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Admin/statushistory.css' %}">
+
+<div class="dashboard-container">
+<h2 class="page-title">Ticket Status Changes</h2>
+
+<table class="data-table">
+    <thead>
+        <tr class="table-head">
+            <th>Ticket</th>
+            <th>Old_Status</th>
+            <th>New_status</th>
+            <th>Changed By</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for h in history %}
+        <tr class="table-row">
+            <td>{{ h.ticket.title }}</td>
+            <td>{{ h.get_old_status_display|default:"—" }}</td>
+            <td>{{ h.get_new_status_display }}</td>
+            <td>{{ h.changed_by.username|default:"Unknown" }}</td>
+            <td>{{ h.changed_at }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="empty-row">No status changes yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table> 
+
+<p style="margin-top: 20px;">
+<a href="{% url 'Admin:Dashboard' %}">← Back to Dashboard</a></p>
+
+<a href="{% url 'Customer:Customer_list' %}" class="back-link">← Back to Customers</a>
+   
+</div>
+{% endblock %}

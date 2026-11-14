@@ -1,0 +1,5 @@
+.followup-table { border-collapse: collapse; width: 100%; margin-top: 1rem; background: #fff; }
+  .followup-table th, .followup-table td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+  .followup-table thead tr { background: #4b3fa8; color: #fff; }
+  .followup-table tbody tr:nth-child(even) { background: #f7f7fb; }
+  .new-followup-btn { display: inline-block; margin-top: .5rem; padding: 6px 14px; background: #4b3fa8; color: #fff; border-radius: 4px; text-decoration: none; }

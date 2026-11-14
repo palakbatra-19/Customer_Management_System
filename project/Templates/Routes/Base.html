@@ -1,0 +1,37 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'Routes/Base.css' %}">
+<body>
+{% if request.user.is_authenticated %}
+<div class="sidebar">
+        <h1>{{user.username}} Panel</h1>
+        {% if request.user.is_superuser %}
+            <a href="{% url 'Admin:Dashboard' %}">Dashboard</a>
+            <a href="{% url 'Admin:Admin_list' %}">Admin</a>
+            <a href="{% url 'Agent:Agent_list' %}">Agents</a>
+            <a href="{% url 'Customer:Customer_list' %}">Customers</a>
+            <a href="{% url 'Ticket:Ticket_list' %}">Tickets</a>
+         
+
+        {% else %}
+            <a href="{% url 'Ticket:Ticket_list' %}">My Tickets</a>
+            <a href="{% url 'Customer:My_customers' %}">My Customers</a>
+        {% endif %}
+</div>
+<div class="main">
+    <div class="topbar">
+        <span>Hi, {{ request.user.username }}</span>
+        <a href="{% url 'Register:Logout' %}" class="logout-btn">Logout</a>
+    </div>
+    <div class="content">
+        {% else %}
+        <div class="full-page">
+            {% endif %}
+
+            {% block content %}{% endblock %}
+
+
+        </div>
+    </div>
+
+</div>
+</body>

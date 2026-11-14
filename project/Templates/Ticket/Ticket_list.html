@@ -1,0 +1,79 @@
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Ticket/ticket_list.css' %}">
+
+<div class="dashboard-container">
+    <h2 class="list-title">Tickets</h2>
+
+    <div class="actions-row">
+        <a href="{% url 'Ticket:Ticket_create' %}" class="new-ticket-btn">
+            + New Ticket
+        </a>
+    </div>
+
+    <form method="GET" class="filter-form">
+        <input type="text" name="q" placeholder="Search title or customer" value="{{ request.GET.q }}"
+               class="filter-search">
+
+        <select name="status" class="filter-select">
+            <option value="">All statuses</option>
+            <option value="open" {% if request.GET.status == 'open' %}selected{% endif %}>Open</option>
+            <option value="in_progress" {% if request.GET.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+            <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+            <option value="resolved" {% if request.GET.status == 'resolved' %}selected{% endif %}>Resolved</option>
+            <option value="closed" {% if request.GET.status == 'closed' %}selected{% endif %}>Closed</option>
+        </select>
+
+        <button type="submit" class="filter-submit">
+            Filter
+        </button>
+    </form>
+
+    <table class="data-table">
+        <thead>
+            <tr class="table-head">
+                <th>Customer</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Agent</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% regroup page_obj by customer as customer_groups %}
+            {% for group in customer_groups %}
+                {% for ticket in group.list %}
+                <tr class="table-row">
+                   {% if forloop.first %}
+                <td class="customer-cell" rowspan="{{ group.list|length }}">
+                    <a href="{% url 'Customer:Customer_detail' group.grouper.pk %}" class="customer-link">{{ group.grouper.name }}</a>
+                </td>
+                {% endif %}
+                <td>{{ ticket.title }}</td>
+
+                    <td>{{ ticket.get_category_display }}</td>
+                    <td>{{ ticket.get_priority_display }}</td>
+                    <td>
+                        <span class="status-badge status-badge--{{ ticket.status }}">{{ ticket.get_status_display }}</span>
+                    </td>
+                    <td>{{ ticket.assigned_agent.username|default:"Unassigned" }}</td>
+                    <td>
+                        <a href="{% url 'Ticket:Ticket_update' ticket.pk %}" class="edit-link">Edit</a>
+                        <a href="{% url 'Ticket:Ticket_delete' ticket.pk %}" class="delete-link" onclick="return confirm('Delete this ticket?');">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% empty %}
+                <tr><td colspan="7" class="empty-row">No tickets found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination-info">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </div>
+</div>
+{% endblock %}

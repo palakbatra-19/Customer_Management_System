@@ -1,0 +1,36 @@
+
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+
+
+<link rel="stylesheet" href="{% static 'Admin/admin_list.css' %}">
+
+<div class="dashboard-container">
+    <h2 style="margin: 0;">Admin</h2>
+    
+</div>
+
+    <table>
+        <thead>
+            
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Assigned Tickets</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in admin %}
+            <tr>
+                <td>{{ a.username }}</td>
+                <td>{{ a.email }}</td>
+                <td>{{ a.assigned_tickets.count }}</td>
+            </tr>
+            {% empty %}
+            <tr class="empty-row"><td colspan="3">No admin found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

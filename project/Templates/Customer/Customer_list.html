@@ -1,0 +1,70 @@
+{% extends 'Routes/base.html' %}
+{% load static%}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'Customer/customer_list.css' %}">
+
+<body>
+<div class="container">
+    <h2>Customers</h2>
+
+    <div class="header-actions">
+        <a href="{% url 'Customer:Customer_create' %}" class="add-btn">+ Add Customer</a>
+        
+    </div>
+
+    <form method="get" class="filters">
+        <input type="text" name="q" placeholder="Search name, email, phone">
+        <select name="status">
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>Phone</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td><a href="{% url 'Customer:Customer_detail' customer.pk %}" style="color:#2575fc; text-decoration:none; font-weight:bold;">{{ customer.name }}</a></td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.password }}</td>
+                <td>{{ customer.phone }}</td>
+                <td>{{ customer.company }}</td>
+                <td><span class="status status-{{ customer.status }}">{{ customer.status }}</span></td>
+                <td class="actions">
+                    <a href="{% url 'Customer:Customer_update' customer.pk %}" class="edit-link">Edit</a>
+                    <a href="{% url 'Customer:Customer_delete' customer.pk %}" class="delete-link">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr class="empty-row"><td colspan="6">No customers found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        {% if customers.has_previous %}
+            <a href="?page={{ customers.previous_page_number }}&q={{ request.GET.q }}&status={{ request.GET.status }}">Prev</a>
+        {% endif %}
+
+        <span>Page {{ customers.number }} of {{ customers.paginator.num_pages }}</span>
+
+        {% if customers.has_next %}
+            <a href="?page={{ customers.next_page_number }}&q={{ request.GET.q }}&status={{ request.GET.status }}">Next</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

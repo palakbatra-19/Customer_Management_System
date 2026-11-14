@@ -1,0 +1,14 @@
+﻿{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Ticket/ticket_form.css' %}">
+<div class="dashboard-container">
+    <h2 class="form-title">Delete Ticket</h2>
+    <p>Are you sure you want to delete the ticket "<strong>{{ ticket.title }}</strong>"? This action cannot be undone.</p>
+    <form method="post" class="ticket-form">
+        {% csrf_token %}
+        <button type="submit" class="save-ticket-btn" style="background:#c0392b;">Yes, Delete</button>
+        <a href="{% url 'Ticket:Ticket_list' %}" class="back-link">Cancel</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Admin/dashboard.css' %}">
+
+<div class="dashboard-container">
+    <h2 class="dashboard-title">Admin Dashboard</h2>
+    <h3 class="section-subtitle">Recent Status Updates</h3>
+
+    <div class="stats-row">
+        <div class="stat-card stat-card--customers">
+            <div class="stat-value">{{ total_customers }}</div>
+            <div class="stat-label">Customers</div>
+        </div>
+        <div class="stat-card stat-card--tickets">
+            <div class="stat-value">{{ total_tickets }}</div>
+            <div class="stat-label">Total Tickets</div>
+        </div>
+        <div class="stat-card stat-card--open">
+            <div class="stat-value">{{ open_tickets }}</div>
+            <div class="stat-label">Open</div>
+        </div>
+        <div class="stat-card stat-card--in-progress">
+            <div class="stat-value">{{ in_progress_tickets }}</div>
+            <div class="stat-label">In Progress</div>
+        </div>
+    </div>
+</div>
+
+<div class="analytics-panel">
+    <h3 class="analytics-title">Analytics</h3>
+    <div class="analytics-grid">
+        <div class="chart-card">
+            <h4 class="chart-card-title">Tickets by Status</h4>
+            <img src="data:image/png;base64,{{ ticket_chart }}" class="chart-image" alt="Tickets by status chart">
+        </div>
+        <div class="chart-card">
+            <h4 class="chart-card-title">Customers by Status</h4>
+            <img src="data:image/png;base64,{{ customer_chart }}" class="chart-image" alt="Customers by status chart">
+        </div>
+        <div class="chart-card">
+            <h4 class="chart-card-title">Tickets per Person</h4>
+            <img src="data:image/png;base64,{{ agent_chart }}" class="chart-image" alt="Tickets per person chart">
+        </div>
+    </div>
+</div>
+{% endblock %}

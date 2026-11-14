@@ -1,0 +1,50 @@
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Register/signup.css' %}">
+
+<div class="auth-page">
+<div class="container">
+    <h2 class="signup-title">Sign Up</h2>
+
+    {% if error %}
+        <div class="error-box">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="POST" class="signup-form">
+        {% csrf_token %}
+
+        <div class="form-field">
+            <label class="form-label">Username</label>
+            <input type="text" name="username" required class="form-input">
+        </div>
+
+        <div class="form-field">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" required class="form-input">
+        </div>
+
+        <div class="form-field">
+            <label class="form-label">Password</label>
+            <input type="password" name="password1" required class="form-input">
+        </div>
+
+        <div class="form-field form-field--last">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="password2" required class="form-input">
+        </div>
+
+        <button type="submit" class="signup-submit">
+            Sign Up
+        </button>
+    </form>
+    <a class="auth-link" href="{% url 'Register:Login' %}">Already have an account? Login</a>
+
+    <p class="login-prompt">
+        Already have an account? <a href="{% url 'Register:Login' %}" class="login-link">Login</a>
+    </p>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Agent/agent_form.css' %}">
+
+<div class="dashboard-container">
+    <h2 class="form-title">{{ title }}</h2>
+
+    <form method="post" class="agent-form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-field">
+            <label class="form-label">{{ field.label }}</label>
+            <input type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}" value="{{ field.value|default_if_none:'' }}"
+                   class="form-input">
+            {% if field.help_text %}
+                <div class="form-help">{{ field.help_text }}</div>
+            {% endif %}
+            {% if field.errors %}
+                <div class="form-error">{{ field.errors.0 }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="form-submit">
+            Create Agent
+        </button>
+    </form>
+
+    <a href="{% url 'Agent:Agent_list' %}" class="back-link">← Back to Agents</a>
+</div>
+{% endblock %}

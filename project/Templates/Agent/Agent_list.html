@@ -1,0 +1,36 @@
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Agent/agent_list.css' %}">
+
+<div class="dashboard-container">
+    <h2 style="margin: 0;">Agents</h2>
+    <br>
+    <a href="{% url 'Agent:Agent_create' %}" class="add-btn">
+        + Add Agent
+    </a>
+</div>
+
+    <table>
+        <thead>
+            
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Assigned Tickets</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for agent in agents %}
+            <tr>
+                <td>{{ agent.username }}</td>
+                <td>{{ agent.email }}</td>
+                <td>{{ agent.assigned_tickets.count }}</td>
+            </tr>
+            {% empty %}
+            <tr class="empty-row"><td colspan="3">No agents found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'Routes/base.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'Register/logout.css' %}">
+</head>
+<body>
+
+    <div class="logout-container">
+        <h1>You have been logged out</h1>
+        <p>Thank you for spending time on our site today. You are now safely signed out of your account.</p>
+        
+      
+            <a href="{% url 'Register:Home' %}" class="btn">Go to Home</a>
+      
+            <a href="{% url 'Register:Login' %}" class="btn">Go to Login</a>
+      
+      
+    </div>
+
+</body>
+</html>

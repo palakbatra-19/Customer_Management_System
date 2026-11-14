@@ -1,0 +1,81 @@
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Ticket/ticket_form.css' %}">
+
+<div class="dashboard-container">
+    <h2 class="form-title">{{ title }}</h2>
+
+    {% if ticket %}
+    <p class="current-status">
+        Current status: <strong>{{ ticket.get_status_display }}</strong>
+    </p>
+    {% endif %}
+
+    <form method="post" class="ticket-form">
+        {% csrf_token %}
+
+        {% if form.title %}
+        <div class="form-field">
+            <label class="form-label">Title <span class="required-mark">*</span></label>
+            {{ form.title }}
+            {% if form.title.errors %}<div class="form-error">{{ form.title.errors.0 }}</div>{% endif %}
+        </div>
+        {% endif %}
+
+       {% if form.customer %}
+<div class="form-field">
+    <label class="form-label">Customer</label>
+    {{ form.customer }}
+    {% if form.customer.errors %}<div class="form-error">{{ form.customer.errors.0 }}</div>{% endif %}
+</div>
+{% endif %}
+
+        {% if form.category %}
+        <div class="form-field">
+            <label class="form-label">Category</label>
+            {{ form.category }}
+        </div>
+        {% endif %}
+
+        {% if form.priority %}
+        <div class="form-field">
+            <label class="form-label">Priority</label>
+            {{ form.priority }}
+        </div>
+        {% endif %}
+
+        {% if form.status %}
+        <div class="form-field">
+            <label class="form-label">Status</label>
+            {{ form.status }}
+        </div>
+        {% endif %}
+
+        {% if form.assigned_agent and request.user.is_superuser %}
+        <div class="form-field">
+            <label class="form-label">Assign Agent</label>
+            {{ form.assigned_agent }}
+            <small class="form-hint">Choose which agent handles this ticket.</small>
+        </div>
+        {% endif %}
+
+     
+
+        {% if form.description %}
+        <div class="form-field">
+            <label class="form-label">Description</label>
+            {{ form.description }}
+            <small class="form-hint">Required if you're changing the status.</small>
+            {% if form.description.errors %}<div class="form-error">{{ form.description.errors.0 }}</div>{% endif %}
+        </div>
+        {% endif %}
+
+        <button type="submit" class="save-ticket-btn">
+            Save Ticket
+        </button>
+    </form>
+
+    <a href="{% url 'Ticket:Ticket_list' %}" class="back-link">← Back to Tickets</a>
+</div>
+{% endblock %}

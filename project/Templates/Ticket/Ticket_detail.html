@@ -1,0 +1,145 @@
+{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Ticket/ticket_detail.css' %}">
+
+<div class="dashboard-container">
+<h1> palak </h1>
+    <h2 class="ticket-title">{{ ticket.title }}</h2>
+
+    <div class="ticket-info">
+        <p><strong>Customer:</strong> {{ ticket.customer.name }}</p>
+        <p><strong>Category:</strong> {{ ticket.get_category_display }}</p>
+        <p><strong>Priority:</strong> {{ ticket.get_priority_display }}</p>
+        <p><strong>Current Status:</strong> {{ ticket.get_status_display }}</p>
+    </div>
+
+    <form method="post" class="status-form">
+        {% csrf_token %}
+        {{ form.new_status.label_tag }}
+        {{ form.new_status }}
+        {{ form.description.label_tag }}
+        {{ form.description }}
+        <button type="submit" class="update-status-btn">Update Status</button>
+    </form>
+
+    {% if request.user.is_superuser %}
+    <form method="post" class="assign-form">
+        {% csrf_token %}
+        <label for="agent_id">Assign Agent</label>
+        <select name="agent_id" id="agent_id">
+            <option value="">Unassigned</option>
+            {% for agent in agents %}
+            <option value="{{ agent.pk }}" {% if ticket.assigned_agent_id == agent.pk %}selected{% endif %}>{{ agent.username }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" name="assign_agent" class="assign-btn">Assign</button>
+    </form>
+    {% endif %}
+
+    <h3 class="section-heading">Status History</h3>
+    <table class="data-table">
+        <thead>
+            <tr class="table-head">
+                <th>Old Status</th>
+                <th>New Status</th>
+                <th>Description</th>
+                <th>Changed By</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for h in status_history %}
+            <tr class="table-row">
+                <td>{{ h.old_status }}</td>
+                <td>{{ h.new_status }}</td>
+                <td>{{ h.description }}</td>
+                <td>{{ h.changed_by.username }}</td>
+                <td>{{ h.changed_at }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="empty-row">No status changes yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 class="section-heading">Activity Log</h3>
+<table class="data-table">
+    <thead>
+        <tr class="table-head">
+            <th>Type</th>
+            <th>Details</th>
+            <th>By</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in activities %}
+        <tr class="table-row">
+            <td><span class="activity-badge activity-badge--{{ a.activity_type }}">{{ a.get_activity_type_display }}</span></td>
+            <td>
+                {% if a.activity_type == 'status_change' %}
+                    {{ a.old_value }} → {{ a.new_value }}{% if a.description %}: {{ a.description }}{% endif %}
+                {% elif a.activity_type == 'assignment' %}
+                    {{ a.old_value }} → {{ a.new_value }}
+                {% else %}
+                    {{ a.description }}
+                {% endif %}
+            </td>
+            <td>{{ a.changed_by.username|default:"System" }}</td>
+            <td>{{ a.changed_at }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="empty-row">No activity yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+  
+    <h3 class="section-heading">Add Comment</h3>
+<form method="post" class="comment-form">
+    {% csrf_token %}
+    {{ comment_form.comment }}
+    <button type="submit" name="add_comment" class="assign-btn">Add Comment</button>
+</form>
+{% if is_staff_member %}
+<h3 class="section-heading">Team Conversation</h3>
+<div class="activity-feed">
+    {% for c in team_comments %}
+    <div class="activity-item">
+        <div class="activity-body">
+            <strong>{{ c.author.username|default:"Unknown" }}</strong>: {{ c.message }}
+        </div>
+        <div class="activity-meta">{{ c.created_at }}</div>
+
+        {% for r in c.replies.all %}
+        <div class="activity-item" style="margin-left:30px; border-left:2px solid #ddd; padding-left:10px;">
+            <div class="activity-body">
+                <strong>{{ r.author.username|default:"Unknown" }}</strong>: {{ r.message }}
+            </div>
+            <div class="activity-meta">{{ r.created_at }}</div>
+        </div>
+        {% endfor %}
+
+        <details style="margin-left:30px; margin-top:5px;">
+            <summary>Reply</summary>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="parent_id" value="{{ c.pk }}">
+                {{ reply_form.message }}
+                <button type="submit" name="add_team_comment" class="assign-btn">Send Reply</button>
+            </form>
+        </details>
+    </div>
+    {% empty %}
+    <p class="empty-row">No team comments yet.</p>
+    {% endfor %}
+</div>
+
+
+{% endif %}
+
+
+    <a href="{% url 'Ticket:Ticket_list' %}" class="back-link">← Back to Tickets</a>
+</div>
+{% endblock %}

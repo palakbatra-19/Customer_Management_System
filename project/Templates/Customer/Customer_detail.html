@@ -1,0 +1,79 @@
+﻿{% extends 'Routes/base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'Customer/customer_detail.css' %}">
+<div class="dashboard-container">
+    <div class="detail-panel">
+        <h2 class="detail-title">{{ customer.name }}</h2>
+        <div class="detail-info">
+            <p><strong>Email:</strong> {{ customer.email }}</p>
+            <p><strong>Phone:</strong> {{ customer.phone }}</p>
+            <p><strong>Company:</strong> {{ customer.company|default:"-" }}</p>
+            <p><strong>Status:</strong> {{ customer.get_status_display }}</p>
+        </div>
+        <h3 class="section-heading">Tickets</h3>
+        <table class="data-table">
+            <thead>
+                <tr class="table-head table-head--tickets">
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Agent</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tickets %}
+                <tr class="table-row">
+                    <td><a href="{% url 'Admin:StatusHistory' %}">{{ t.title }}</a></td>
+                    <td>{{ t.get_category_display }}</td>
+                    <td>{{ t.get_priority_display }}</td>
+                    <td>{{ t.get_status_display }}</td>
+                    <td>{{ t.assigned_agent.username|default:"Unassigned" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="empty-row">No tickets yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h3 class="section-heading">Status History</h3>
+        <table class="data-table">
+            <thead>
+                <tr class="table-head table-head--history">
+                    <th>Ticket</th>
+                    <th>Old Status</th>
+                    <th>New Status</th>
+                    <th>Comment</th>
+                    <th>Changed By</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in status_history %}
+                <tr class="table-row">
+                    <td>{{ h.ticket.title }}</td>
+                    <td>{{ h.old_status }}</td>
+                    <td>{{ h.new_status }}</td>
+                    <td>{{ h.description }}</td>
+                    <td>{{ h.changed_by.username }}</td>
+                    <td>{{ h.changed_at }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="empty-row">No status changes yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'Customer:Customer_list' %}" class="back-link"> Back to Customers</a>
+        <!-- Add this near the customer's other action links/sections on the
+     customer detail template (e.g. next to "Back to Customers" or
+     above the Tickets table) -->
+
+
+
+<a href="{% url 'Customer:Followup_list' customer.id %}" class="btn-primary">
+  View Follow-ups
+</a>
+
+    </div>
+</div>
+{% endblock %}
